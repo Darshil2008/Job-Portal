@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Welcome, {{ session.get('name') }}</h2>
+
+{% if session.get('role') == 'recruiter' %}
+    <h4>My Job Listings</h4>
+    <a href="/post-job" class="btn btn-primary mb-3">+ Add Job</a>
+    <div class="table-responsive">
+    <table class="table table-bordered bg-white align-middle">
+        <tr><th>Title</th><th>Company</th><th>Status</th><th>Action</th></tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.title }}</td><td>{{ job.company }}</td><td>{{ job.status }}</td>
+            <td>
+                <form method="POST" action="/delete-job/{{ job.id }}" onsubmit="return confirm('Delete this job?')">
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-center">You have not posted any jobs yet.</td></tr>
+        {% endfor %}
+    </table>
+    </div>
+
+    <h4 class="mt-5">Applicants</h4>
+    <div class="table-responsive">
+    <table class="table table-bordered bg-white">
+        <tr><th>Applicant</th><th>Job</th><th>Status</th></tr>
+        {% for a in applications %}
+        <tr><td>{{ a.applicant }}</td><td>{{ a.title }}</td><td>{{ a.status }}</td></tr>
+        {% else %}
+        <tr><td colspan="3" class="text-center">No applications received yet.</td></tr>
+        {% endfor %}
+    </table>
+    </div>
+
+{% elif session.get('role') == 'job_seeker' %}
+    <h4>My Applications</h4>
+    <div class="table-responsive">
+    <table class="table table-bordered bg-white">
+        <tr><th>Job</th><th>Company</th><th>Status</th></tr>
+        {% for a in applications %}
+        <tr><td>{{ a.title }}</td><td>{{ a.company }}</td><td>{{ a.status }}</td></tr>
+        {% else %}
+        <tr><td colspan="3" class="text-center">You have not applied for any jobs yet.</td></tr>
+        {% endfor %}
+    </table>
+    </div>
+
+{% elif session.get('role') == 'admin' %}
+    <h4>Admin Dashboard</h4>
+    <a href="/admin" class="btn btn-primary">Manage Platform</a>
+{% endif %}
+{% endblock %}

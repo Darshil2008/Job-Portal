@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<h4>Job Approval Requests</h4>
+<div class="table-responsive">
+<table class="table table-bordered bg-white align-middle">
+    <tr><th>Title</th><th>Company</th><th>Recruiter</th><th>Status</th><th>Action</th></tr>
+    {% for job in jobs %}
+    <tr>
+        <td>{{ job.title }}</td><td>{{ job.company }}</td><td>{{ job.recruiter }}</td><td>{{ job.status }}</td>
+        <td>
+            {% if job.status == 'pending' %}
+                <div class="d-flex gap-2">
+                    <form method="POST" action="/approve/{{ job.id }}/approved">
+                        <button class="btn btn-success btn-sm">Approve</button>
+                    </form>
+                    <form method="POST" action="/approve/{{ job.id }}/rejected">
+                        <button class="btn btn-danger btn-sm">Reject</button>
+                    </form>
+                </div>
+            {% else %}
+                <span class="text-muted">No action</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center">No job posts yet.</td></tr>
+    {% endfor %}
+</table>
+</div>
+
+<h4 class="mt-5">Registered Users</h4>
+<div class="table-responsive">
+<table class="table table-bordered bg-white">
+    <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+    {% for user in users %}
+    <tr><td>{{ user.name }}</td><td>{{ user.email }}</td><td>{{ user.role }}</td></tr>
+    {% endfor %}
+</table>
+</div>
+{% endblock %}

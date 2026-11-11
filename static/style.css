@@ -1,0 +1,28 @@
+body {
+    background: #f3f6fb;
+    font-family: Arial, sans-serif;
+}
+.hero {
+    background: linear-gradient(120deg, #101d42, #2457bd);
+    min-height: 280px;
+}
+.hero h1 { max-width: 650px; }
+.job-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+    transition: 0.2s;
+}
+.job-card:hover { transform: translateY(-5px); }
+.form-box {
+    max-width: 480px;
+    margin: 50px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+.btn-primary {
+    background: #2457bd;
+    border-color: #2457bd;
+}
