@@ -1,45 +1,270 @@
+
 {% extends "base.html" %}
 {% block content %}
-<section class="hero p-4 p-md-5 rounded-4 text-white">
-    <h1 class="display-4 fw-bold">Find Your Dream Job</h1>
-    <p class="lead">Discover opportunities. Build your future.</p>
-    <form class="d-flex gap-2 mt-4" method="GET" action="/">
-        <input class="form-control" name="search" value="{{ search }}" placeholder="Search jobs or companies">
-        <button class="btn btn-primary">Search</button>
-    </form>
-</section>
 
-<div class="d-flex justify-content-between align-items-center mt-5 mb-4">
-    <h2 class="mb-0">Latest Jobs</h2>
-    <span class="text-muted">{{ jobs|length }} result(s)</span>
-</div>
+<div class="dashboard-layout">
 
-<div class="row">
-{% for job in jobs %}
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card job-card h-100 p-3">
-            <div class="card-body d-flex flex-column">
-                <h4>{{ job.title }}</h4>
-                <h6 class="text-primary">{{ job.company }}</h6>
-                <p class="mb-1">📍 {{ job.location or "Location not specified" }}</p>
-                <p class="mb-2">💰 {{ job.salary or "Salary not specified" }}</p>
-                <p>{{ job.description[:140] }}{% if job.description|length > 140 %}...{% endif %}</p>
-                <div class="mt-auto">
-                    {% if session.get('role') == 'job_seeker' %}
-                        <form method="POST" action="/apply/{{ job.id }}">
-                            <button class="btn btn-primary w-100">Apply Now</button>
-                        </form>
-                    {% elif not session.get('user_id') %}
-                        <a href="/login" class="btn btn-primary w-100">Login to Apply</a>
-                    {% elif session.get('role') == 'recruiter' %}
-                        <span class="text-muted small">Login as a job seeker to apply.</span>
-                    {% endif %}
-                </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="5" rx="2.5" width="16" height="13" fill="white" opacity="0.95"/>
+                    <rect x="7" y="2" rx="1.5" width="8" height="5" fill="none" stroke="white" stroke-width="1.8"/>
+                    <line x1="3" y1="11" x2="19" y2="11" stroke="#2457bd" stroke-width="1.5" opacity="0.5"/>
+                    <circle cx="11" cy="11" r="2.2" fill="#2457bd"/>
+                </svg>
+            </span>
+            <span>JobPortal</span>
+        </div>
+
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <a href="/" class="side-link active">⌕ <span>Find Jobs</span></a>
+        <a href="/dashboard" class="side-link">▤ <span>My Dashboard</span></a>
+
+        {% if session.get('role') == 'job_seeker' %}
+        <a href="/dashboard" class="side-link">♡ <span>My Applications</span></a>
+        {% endif %}
+
+        {% if session.get('role') == 'recruiter' %}
+        <a href="/post-job" class="side-link">＋ <span>Post a Job</span></a>
+        {% endif %}
+
+        {% if session.get('role') == 'admin' %}
+        <a href="/admin" class="side-link">⚙ <span>Admin Panel</span></a>
+        {% endif %}
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-help">
+                <strong>Need career help?</strong>
+                <p>Explore opportunities that match your skills.</p>
+            </div>
+            {% if session.get('user_id') %}
+                <a href="/logout" class="side-link">↪ <span>Logout</span></a>
+            {% else %}
+                <a href="/login" class="side-link">↪ <span>Login</span></a>
+            {% endif %}
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <div class="topbar">
+            <div>
+                <span class="eyebrow">CAREER DISCOVERY</span>
+                <h2>Find your next opportunity.</h2>
+            </div>
+
+            <div class="top-profile">
+                {% if session.get('user_id') %}
+                    <div class="avatar">{{ session.get('name', 'U')[0]|upper }}</div>
+                    <div>
+                        <strong>{{ session.get('name') }}</strong>
+                        <small>{{ session.get('role')|replace('_', ' ')|title }}</small>
+                    </div>
+                {% else %}
+                    <a href="/login" class="btn btn-outline-primary">Sign in</a>
+                {% endif %}
             </div>
         </div>
-    </div>
-{% else %}
-    <div class="col-12"><p class="text-muted">No approved jobs found. Try another search.</p></div>
-{% endfor %}
+
+        <!-- INTRO -->
+        <section class="welcome-panel">
+            <div class="welcome-copy">
+                <span class="welcome-tag">YOUR NEXT CHAPTER STARTS HERE</span>
+                <h1>Make your next career move count.</h1>
+                <p>Discover opportunities, explore new technologies and connect with companies building the future.</p>
+            </div>
+            <div class="welcome-art">
+                <svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Person silhouette -->
+                    <circle cx="70" cy="40" r="18" fill="rgba(255,255,255,0.15)"/>
+                    <rect x="52" y="62" rx="12" width="36" height="45" fill="rgba(255,255,255,0.12)"/>
+                    <!-- Briefcase -->
+                    <rect x="120" y="55" rx="6" width="50" height="40" fill="rgba(255,255,255,0.18)"/>
+                    <rect x="135" y="48" rx="3" width="20" height="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2.5"/>
+                    <line x1="120" y1="72" x2="170" y2="72" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+                    <!-- Decorative dots -->
+                    <circle cx="30" cy="130" r="4" fill="rgba(255,255,255,0.08)"/>
+                    <circle cx="50" cy="140" r="6" fill="rgba(255,255,255,0.06)"/>
+                    <circle cx="160" cy="25" r="5" fill="rgba(255,255,255,0.1)"/>
+                    <circle cx="185" cy="40" r="3" fill="rgba(255,255,255,0.07)"/>
+                    <!-- Rising chart line -->
+                    <polyline points="20,120 60,105 100,90 140,60 180,35" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- SEARCH -->
+        <section class="search-section">
+            <form action="/" method="GET" class="search-form">
+                <div class="search-field">
+                    <label>WHAT ARE YOU LOOKING FOR?</label>
+                    <input type="text" name="search"
+                           value="{{ search }}"
+                           placeholder="Job title, company or skill">
+                </div>
+
+                <div class="search-field">
+                    <label>LOCATION</label>
+                    <input type="text" name="location"
+                           value="{{ location }}"
+                           placeholder="City or remote">
+                </div>
+
+                <button type="submit" class="search-button">Search Jobs →</button>
+            </form>
+        </section>
+
+        <!-- QUICK STATS -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <span>Available opportunities</span>
+                <strong>{{ jobs|length }}</strong>
+                <small>Matching your search</small>
+            </div>
+            <div class="stat-card">
+                <span>Technology fields</span>
+                <strong>08+</strong>
+                <small>Explore different career paths</small>
+            </div>
+            <div class="stat-card">
+                <span>Career possibilities</span>
+                <strong>∞</strong>
+                <small>Start with your skills</small>
+            </div>
+        </section>
+
+        <!-- JOB CONTENT -->
+        <div class="content-heading">
+            <div>
+                <span class="eyebrow">EXPLORE OPPORTUNITIES</span>
+                <h3>Jobs worth looking into</h3>
+                <p>Roles from different industries, teams and technology stacks.</p>
+            </div>
+            <span class="result-count">{{ jobs|length }} results</span>
+        </div>
+
+        <!-- FILTERS -->
+        <form action="/" method="GET" class="filter-bar">
+            <input type="hidden" name="search" value="{{ search }}">
+            <input type="hidden" name="location" value="{{ location }}">
+
+            <select name="job_type">
+                <option value="">All job types</option>
+                {% for item in ["Full-time", "Part-time", "Internship", "Contract"] %}
+                <option value="{{ item }}" {% if job_type == item %}selected{% endif %}>
+                    {{ item }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <select name="work_mode">
+                <option value="">All work modes</option>
+                {% for item in ["Remote", "Hybrid", "On-site"] %}
+                <option value="{{ item }}" {% if work_mode == item %}selected{% endif %}>
+                    {{ item }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <button class="filter-button">Apply Filters</button>
+            <a href="/" class="clear-filter">Clear</a>
+        </form>
+
+        <!-- JOB CARDS -->
+        <section class="jobs-grid">
+
+            {% for job in jobs %}
+            <article class="job-card">
+
+                <div class="job-card-top">
+                    <div class="company-logo">
+                        {{ job.company[0]|upper }}
+                    </div>
+
+                    <span class="job-type">{{ job.job_type or "Full-time" }}</span>
+                </div>
+
+                <div class="company-name">{{ job.company }}</div>
+                <h4>{{ job.title }}</h4>
+
+                <p class="job-description">{{ job.description }}</p>
+
+                <div class="job-meta">
+                    <span>⌖ {{ job.location }}</span>
+                    <span>◷ {{ job.work_mode or "On-site" }}</span>
+                    <span>◉ {{ job.experience or "Fresher" }}</span>
+                </div>
+
+                <div class="salary-row">
+                    <strong>{{ job.salary }}</strong>
+                    <span>Salary range</span>
+                </div>
+
+                <div class="skill-tags">
+                    {% for skill in (job.skills or "").split(",")[:4] %}
+                        {% if skill.strip() %}
+                        <span>{{ skill.strip() }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="job-card-footer">
+                    <small>Explore this opportunity</small>
+
+                    {% if session.get('role') == 'job_seeker' %}
+                    <form method="POST" action="/apply/{{ job.id }}">
+                        <button class="apply-button">Apply Now →</button>
+                    </form>
+                    {% elif not session.get('user_id') %}
+                    <a href="/login" class="apply-button">Login to Apply →</a>
+                    {% else %}
+                    <span class="text-muted small">Job seeker access only</span>
+                    {% endif %}
+                </div>
+
+            </article>
+            {% else %}
+            <div class="empty-state">
+                <h3>No matching jobs found</h3>
+                <p>Try changing your search or filters.</p>
+                <a href="/" class="btn btn-primary">View all jobs</a>
+            </div>
+            {% endfor %}
+
+        </section>
+
+        <!-- TECHNOLOGY SECTION -->
+        <section class="technology-section">
+            <div>
+                <span class="eyebrow">EXPLORE YOUR SKILLS</span>
+                <h3>Opportunities across technologies</h3>
+                <p>Discover roles across popular programming languages, frameworks and tools.</p>
+            </div>
+
+            <div class="technology-tags">
+                {% for skill in [
+                    "Python", "Java", "C++", "JavaScript", "TypeScript",
+                    "React", "Angular", "Vue.js", "Flask", "Django",
+                    "FastAPI", "Node.js", "Spring Boot", "PHP",
+                    "Go", "Rust", "SQL", "PostgreSQL", "MongoDB",
+                    "AWS", "Docker", "Kubernetes", "TensorFlow",
+                    "PyTorch", "Flutter", "Git"
+                ] %}
+                <a href="/?search={{ skill }}">{{ skill }}</a>
+                {% endfor %}
+            </div>
+        </section>
+
+        <footer class="dashboard-footer">
+            <span>© 2026 JobPortal</span>
+            <span>Built for people building their careers.</span>
+        </footer>
+
+    </main>
 </div>
+
 {% endblock %}
