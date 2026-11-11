@@ -82,3 +82,30 @@ Build a functional, user-friendly job portal while learning and applying full-st
 ---
 
 *Built as part of ALTA Builder 30.*
+
+## Run on macOS
+
+1. Open Terminal and move into this folder:
+   ```bash
+   cd Job-Portal
+   ```
+2. Create and activate a virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Start the app:
+   ```bash
+   python app.py
+   ```
+5. Open http://127.0.0.1:5000 in your browser.
+
+The SQLite database (`database.db`) is created automatically on first run.
+
+## Demo admin login
+- Email: `admin@jobportal.com`
+- Password: `admin123`
